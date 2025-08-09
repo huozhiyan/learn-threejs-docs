@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import resizeRendererToDisplaySize from "./resizeSize";
 
 // 获取canvas元素
 const canvas = document.querySelector("#c");
@@ -69,6 +70,16 @@ function makeInstance(geometry, color, x) {
 function render(time) {
   // 将时间转换为秒
   time *= 0.001;
+
+  // 调整渲染器的尺寸以适应 canvas 的实际显示尺寸
+  if (resizeRendererToDisplaySize(renderer)) {
+    // 获取渲染器的 canvas 元素
+    const canvas = renderer.domElement;
+    // 根据 canvas 的实际宽高比动态设置相机的宽高比，防止画面变形
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    // 更新相机的投影矩阵，使设置生效
+    camera.updateProjectionMatrix();
+  }
 
   // 设置不同的立方体旋转速度
   cubes.forEach((cube, ndx) => {
