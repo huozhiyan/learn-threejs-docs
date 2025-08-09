@@ -42,26 +42,44 @@ const boxDepth = 1;
 // BoxGeometry 是四边形的原始几何类，它通常使用构造函数所提供的 “width”、“height”、“depth” 参数来创建立方体或者不规则四边形。
 const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
-// 注意：在有灯光时不要使用 MeshBasicMaterial，因为它不会对光照做出反应。
-// 具有镜面高光的光泽表面的材质
-const material = new THREE.MeshPhongMaterial({ color: 0x44aa88 }); // greenish blue
+// 创建三个立方体实例，并设置不同的颜色和位置
+const cubes = [
+  makeInstance(geometry, 0x44aa88, 0),
+  makeInstance(geometry, 0x8844aa, -2),
+  makeInstance(geometry, 0xaa8844, 2),
+];
 
-// 网格，表示基于以三角形为多边形网格的物体的类。
-const cube = new THREE.Mesh(geometry, material);
+/**
+ * 创建立方体
+ * @param {*} geometry 几何体
+ * @param {*} color 颜色
+ * @param {*} x 位置
+ * @returns 网格模型
+ */
+function makeInstance(geometry, color, x) {
+  const material = new THREE.MeshPhongMaterial({ color });
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
 
-// 把构建好的网格放入场景中
-scene.add(cube);
+  cube.position.x = x;
+  return cube;
+}
 
 // 渲染函数
 function render(time) {
-  // 将时间单位变为秒
+  // 将时间转换为秒
   time *= 0.001;
 
-  cube.rotation.x = time;
-  cube.rotation.y = time;
+  // 设置不同的立方体旋转速度
+  cubes.forEach((cube, ndx) => {
+    const speed = 1 + ndx * 0.1;
+    const rot = time * speed;
+    cube.rotation.x = rot;
+    cube.rotation.y = rot;
+  });
 
-  // 使用渲染器渲染
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 }
+
 requestAnimationFrame(render);
