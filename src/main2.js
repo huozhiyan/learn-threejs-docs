@@ -58,6 +58,7 @@ function main() {
     const hue = Math.random();
     const saturation = 1;
     const luminance = 0.5;
+    // 根据RGB值设置颜色。h：色调（0-1），s：饱和度（0-1），l：亮度（0-1）
     material.color.setHSL(hue, saturation, luminance);
     return material;
   }
